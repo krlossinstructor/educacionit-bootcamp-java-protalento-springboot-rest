@@ -29,4 +29,5 @@ public class EstadosOrdenes {
 	public EstadosOrdenes(Long id) {
 		this.id = id;
 	}
+	
 }

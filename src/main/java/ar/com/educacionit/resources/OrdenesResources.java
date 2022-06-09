@@ -1,16 +1,20 @@
 package ar.com.educacionit.resources;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -62,7 +66,17 @@ public class OrdenesResources {
 		//50..
 	}
 	
+	/*crear los metodos que van a atender las peticiones*/
+	@GetMapping(value="/orden",produces = "application/json")
+	public ResponseEntity<List<Ordenes>> getAll() {
+		
+		List<Ordenes> ordenes =  this.service.findAll();
+		
+		return ResponseEntity.ok(ordenes);
+	}
+	
 	//idempotentes
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping(value = "/orden")
 	public ResponseEntity<Ordenes> post(
 			@Valid @RequestBody OrdenesDto orden) {
@@ -86,6 +100,7 @@ public class OrdenesResources {
 		return ResponseEntity.ok(ordenDb);
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@DeleteMapping(value = "/orden/{id}")
 	public ResponseEntity<Void> delete(
 			@PathVariable(value = "id",required = true) Long id ) {
@@ -98,4 +113,38 @@ public class OrdenesResources {
 		
 		return ResponseEntity.ok().build();
 	}
+	
+	//recurso/id
+	//body:{}
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@PutMapping(consumes = "application/json",produces = "application/json",value = "/orden/{id}" )
+	public ResponseEntity<Ordenes> update(
+			@PathVariable(name = "id",required = true) Long id,
+			@RequestBody Ordenes ordenRequest) {
+		
+		Optional<Ordenes> ordenDb = this.service.getById(id);
+		if(!ordenDb.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		Ordenes orden = ordenDb.get();
+		if(!orden.getId().equals(ordenRequest.getId())) {
+			//409 o 400
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+	
+		//mas validaciones de negocio!!!
+		if(orden.isEstadoFinal()) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).build();
+		}
+		
+		//orden.setCupon(null);
+		//orden.setFechaCreacion(null)
+		orden.setEstado(ordenRequest.getEstado());
+		this.service.update(orden);
+		
+		return ResponseEntity.ok(orden);
+	}
+	
+	
 }

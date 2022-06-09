@@ -1,5 +1,6 @@
 package ar.com.educacionit.services.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,15 @@ public class OrdenesServiceImpl implements OrdenService{
 
 	public void delete(Long id) {
 		this.repository.deleteById(id);
+	}
+
+	@Override
+	public void update(Ordenes orden) {
+		this.repository.save(orden);
+	}
+	
+	@Override
+	public List<Ordenes> findAll() {
+		return this.repository.findAll();
 	}
 }

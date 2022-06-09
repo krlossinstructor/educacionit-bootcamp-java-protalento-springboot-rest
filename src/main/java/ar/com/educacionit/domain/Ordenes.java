@@ -14,6 +14,7 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import ar.com.educacionit.enums.EstadoOrdenEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,4 +55,8 @@ public class Ordenes {
 	@OneToOne
 	@JoinColumn(name="cupones_id", referencedColumnName = "id")
 	private Cupones cupon;
+	
+	public boolean isEstadoFinal() {
+		return this.getEstado().getEstadoFinal().equals(EstadoOrdenEnum.FINAL.getEstado());
+	}
 }
