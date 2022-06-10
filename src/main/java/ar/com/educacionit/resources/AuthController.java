@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ar.com.educacionit.dto.JwtDto;
 import ar.com.educacionit.dto.LoginUsuarioDto;
 import ar.com.educacionit.secutiry.JwtProvider;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,6 +31,7 @@ public class AuthController {
 	@Autowired
 	JwtProvider jwtProvider;
 	
+	@ApiOperation(value="Recurso de auth")
 	@PostMapping("/login")
 	public ResponseEntity<JwtDto> login(
 			@Valid @RequestBody LoginUsuarioDto loginDto

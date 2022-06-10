@@ -64,7 +64,7 @@ public class MainSecurity extends WebSecurityConfigurerAdapter{
 			.antMatchers(HttpMethod.GET, "/**").permitAll() //los get no estan securazados
 			.antMatchers("/auth/**").permitAll()
 			//habilitamos los recurso de swagger swagger
-			.antMatchers("/v2/api-docs","/configuration/**","swagger/**","/webjars/**").permitAll()
+			.antMatchers("/v2/api-docs/**","/configuration/**","swagger/**","/webjars/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.exceptionHandling().authenticationEntryPoint(this.jtwEntryPoint)

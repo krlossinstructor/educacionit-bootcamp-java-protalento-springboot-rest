@@ -50,6 +50,7 @@ public class OrdenesResources {
 	//jax-rs > jersey:Response | spring:ResponseEntity 
 	
 	/*crear los metodos que van a atender las peticiones*/
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping(value="/orden/{id}",produces = "application/json")
 	public ResponseEntity<Ordenes> get(
 			@PathVariable(name="id",required = true) Long id
@@ -67,6 +68,7 @@ public class OrdenesResources {
 	}
 	
 	/*crear los metodos que van a atender las peticiones*/
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping(value="/orden",produces = "application/json")
 	public ResponseEntity<List<Ordenes>> getAll() {
 		
